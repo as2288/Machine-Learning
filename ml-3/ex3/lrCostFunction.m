@@ -10,7 +10,10 @@ m = length(y); % number of training examples
 
 % You need to return the following variables correctly 
 J = 0;
-J = (sum((log(sigmoid(X*theta)) .* -1 .* y) - (1.-y).*(log(1 - sigmoid(X*theta))))/m) ;
+thetaRep = theta;
+thetaRep(1)=0;
+
+J = J+(sum((log(sigmoid(X*theta)) .* -1 .* y) - (1.-y).*(log(1 - sigmoid(X*theta))))/m) + (lambda/(2*m))*sum(thetaRep .^ 2);
 grad = zeros(size(theta));
 
 % ====================== YOUR CODE HERE ======================
