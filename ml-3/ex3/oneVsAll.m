@@ -1,21 +1,42 @@
 function [all_theta] = oneVsAll(X, y, num_labels, lambda)
-%ONEVSALL trains multiple logistic regression classifiers and returns all
-%the classifiers in a matrix all_theta, where the i-th row of all_theta 
-%corresponds to the classifier for label i
-%   [all_theta] = ONEVSALL(X, y, num_labels, lambda) trains num_labels
-%   logisitc regression classifiers and returns each of these classifiers
-%   in a matrix all_theta, where the i-th row of all_theta corresponds 
-%   to the classifier for label i
+
 
 % Some useful variables
 m = size(X, 1);
 n = size(X, 2);
 
-% You need to return the following variables correctly 
+% initializing each parameter vector to 0 values
+%     n        1 2 3 4 5 ..           400
+% theta(for 0) 0 0 0 0 0 0 0 0 0 0 0 0 ..
+% theta(for 1) 0 0 0 0 0 0 0 0 0 0 0 0 ..
+% theta(for 2) 0 0 0 0 0 0 0 0 0 0 0 0 ..
+% theta(for 3) 0 0 0 0 0 0 0 0 0 0 0 0 ..
+% theta(for 4) 0 0 0 0 0 0 0 0 0 0 0 0 ..
+% theta(for 5) 0 0 0 0 0 0 0 0 0 0 0 0 ..
+% theta(for 6) 0 0 0 0 0 0 0 0 0 0 0 0 ..
+% theta(for 7) 0 0 0 0 0 0 0 0 0 0 0 0 ..
+% theta(for 8) 0 0 0 0 0 0 0 0 0 0 0 0 ..
+% theta(for 9) 0 0 0 0 0 0 0 0 0 0 0 0 ..
+
 all_theta = zeros(num_labels, n + 1);
 
 % Add ones to the X data matrix
 X = [ones(m, 1) X];
+
+for c=1:num_labels
+	%  Set options for fminunc
+	% use the gradient to minimize cost function
+	options = optimset('GradObj', 'on', 'MaxIter', 50);
+	initial_theta = zeros(n+1,1);
+	% (y==c) treats c as the positive class and everything else as negative
+	% in first iteration 1 is positive class etc..
+	[theta, cost] = ...
+	fminunc(@(t)(lrCostFunction(t, X, (y==c), lambda)), initial_theta, options);
+	% we now have the parameter vector for theta for c
+	% we can use this theta for predictions
+	all_theta(c,:) = theta;
+end
+
 
 % ====================== YOUR CODE HERE ======================
 % Instructions: You should complete the following code to train num_labels
